@@ -15,15 +15,15 @@ In the case you want to play around, here's how to start:
 4. Make [build.sh](`./build.sh`) executable.
 5. Execute: ``./build.sh`` in your shell of choice.
 6. Usage: 
-``pswm <command | 'name of store'> [subcommand]
-	Commands:
-		new ..... creates a new store
-	Subcommands (follow store name):
-		dump ...... prints contents of store
-		set ....... sets key value pair, overwrites value if already exists
-		get ....... gets value for key
-		del ....... deletes entry by key
-		destroy ... deletes storage
-``
+pswm <command | 'name of store'> [subcommand]\
+	Commands:\
+		new ..... creates a new store\
+	Subcommands (follow store name):\
+		dump ...... prints contents of store\
+		set ....... sets key value pair, overwrites value if already exists\
+		get ....... gets value for key\
+		del ....... deletes entry by key\
+		destroy ... deletes storage\
+
 
 
