@@ -4,28 +4,6 @@
 // Taken because I wanted to learn about it but ended up mostly typing over the 
 // implementation (tutorial)
 
-//MIT License
-//Copyright (c) 2023 Paulo Doms <domspaulo@gmail.com>
-//
-//Permission is hereby granted, free of charge, to any person obtaining
-//a copy of this software and associated documentation files (the
-//"Software"), to deal in the Software without restriction, including
-//without limitation the rights to use, copy, modify, merge, publish,
-//distribute, sublicense, and/or sell copies of the Software, and to
-//permit persons to whom the Software is furnished to do so, subject to
-//the following conditions:
-//
-//The above copyright notice and this permission notice shall be
-//included in all copies or substantial portions of the Software.
-//
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-//EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-//MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-//NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-//LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-//OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-//WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 #ifndef _HM_H
     #define _HM_H
 
@@ -63,12 +41,12 @@ extern void* hm_get(hm* map, const char* key);
 //returns address of newly created key
 extern const char* hm_set(hm* map, const char* key, void* value);
 
+//removes entry by key return 1 if deletion success and 0 if not item not found
+extern int hm_remove(hm* map, char* key);
+
+
 // get length of table
 extern size_t hm_len(hm* map);
-
-extern void hm_dump(hm* map, int idx);
-
-
 
 
 // hm iterator
@@ -86,6 +64,12 @@ extern hmi hm_iterator(hm* map);
 //returns 0 if no more items left
 //hm can't be updated while iterating
 extern int hm_iter_next(hmi* iter); 
+
+//prints to whole hashmap to the screen
+extern void hm_dump(hm* map, int idx);
+
+//serializes the map if value is char*, and returns the buffer length
+extern int hm_serialize_cstr(hm* map, uint8_t* buffer, int buffer_len, uint8_t kv_delim, uint8_t entry_delim);
 
 #endif //_HM_H
 
@@ -145,12 +129,18 @@ void* hm_get(hm* map, const char* key)
 {
     uint64_t hash = hasher(key);
     size_t index = (size_t) (hash & (uint64_t)(map->capacity - 1));
+    size_t index_cpy = index;
+    int is_round = 0;
     while (map->entries[index].key != NULL) {
+        if (is_round && index == index_cpy) {
+            return NULL;
+        }
         if (strcmp(key, map->entries[index].key) == 0) {
             return map->entries[index].value;
         } else {
             index++;
             if (index >= map->capacity) {
+                is_round = 0;
                 index=0;
             }
         }
@@ -231,6 +221,31 @@ const char* hm_set(hm* map, const char* key, void* value)
     return hm_set_entry(map->entries, map->capacity, key, value, &map->length); 
 }
 
+extern int hm_remove(hm* map, char* key) {
+    uint64_t hash = hasher(key);
+    size_t index = (size_t) (hash & (uint64_t)(map->capacity - 1));
+    size_t index_cpy = index;
+    int is_round = 0;
+    while (map->entries[index].key != NULL) {
+        if (is_round && index == index_cpy) {
+            return 0;
+        }
+        if (strcmp(key, map->entries[index].key) == 0) {
+            map->length -= 1;
+            map->entries[index].key = NULL;
+            return 1;
+        } else {
+            index++;
+            if (index >= map->capacity) {
+                is_round = 1;
+                index=0;
+            }
+
+        }
+    }
+    return 0;
+}
+
 size_t hm_len(hm* map) {
     return map->length;
 }
@@ -257,6 +272,7 @@ int hm_iter_next(hmi* iter) {
     return 0;
 }
 
+
 void hm_dump(hm* map, int idx) {
     hmi iter = hm_iterator(map);
     int i = 0;
@@ -268,5 +284,27 @@ void hm_dump(hm* map, int idx) {
         i++;
     }
 }
+
+
+int hm_serialize_cstr(hm* map, uint8_t* buffer, int buffer_len, uint8_t kv_delim, uint8_t entry_delim) {
+    int offset = 0;
+    hmi iter = hm_iterator(map);
+    while (hm_iter_next(&iter)) {
+        size_t k_len = strlen(iter.key);
+        size_t v_len = strlen(iter.value);
+        memcpy(buffer+offset, iter.key, k_len);
+        offset += k_len;
+        buffer[offset] = kv_delim;
+        offset += 1;
+        memcpy(buffer+offset, (uint8_t*)iter.value, v_len);
+        offset += v_len;
+        buffer[offset] = entry_delim;
+        offset++;
+    }
+    return offset;
+}
+
+
+
 
 #endif //HM_IMPLEMENTATION
