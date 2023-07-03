@@ -14,7 +14,7 @@ In the case you want to play around, here's how to start:
 3. Check [build.sh](`./build.sh`) for paths to the libs mentioned in nr. 2.
 4. Make [build.sh](`./build.sh`) executable.
 5. Execute: ``./build.sh`` in your shell of choice.
-6. Usage: 
+6. Usage:\ 
 pswm <command | 'name of store'> [subcommand]\
 	Commands:\
 		new ..... creates a new store\
@@ -23,7 +23,7 @@ pswm <command | 'name of store'> [subcommand]\
 		set ....... sets key value pair, overwrites value if already exists\
 		get ....... gets value for key\
 		del ....... deletes entry by key\
-		destroy ... deletes storage\
+		destroy ... deletes storage
 
 
 
