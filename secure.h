@@ -58,7 +58,6 @@ int aes_decrypt(unsigned char* ciphertext, int ciphertext_len,
 
 int get_aad(unsigned char* buf);
 int get_iv();
-
 void generate_password(char* pw, size_t pw_len);
 
 

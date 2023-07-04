@@ -355,13 +355,14 @@ void close_store(Store* store) {
 void usage() {
     printf("Usage: pswm <command | 'name of store'> [subcommand]\n");
     printf("\tCommands: \n");
-    printf("\t\tnew ..... creates a new store\n");
+    printf("\t\tnew ................. creates a new store\n");
     printf("\tSubcommands (follow store name):\n");
-    printf("\t\tdump ...... prints contents of store\n");
-    printf("\t\tset ....... sets key value pair, overwrites value if already exists\n");
-    printf("\t\tget ....... gets value for key\n");
-    printf("\t\tdel ....... deletes entry by key\n");
-    printf("\t\tdestroy ... deletes storage\n");
+    printf("\t\tdump ................ prints contents of store\n");
+    printf("\t\tset <key> <value> ... sets key value pair, overwrites value if already exists\n");
+    printf("\t\tgen <key> ........... generates password and sets key value pair, overwrites value if already exists\n");
+    printf("\t\tget <key> ........... gets value for key\n");
+    printf("\t\tdel <key> ........... deletes entry by key\n");
+    printf("\t\tdestroy ............. deletes storage\n");
     printf("\n\tNOTE: data is stored on disk password protected and encrypted. No warranty granted, use at your own risk.\n");
 }
 
