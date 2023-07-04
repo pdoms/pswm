@@ -1,11 +1,60 @@
 #include "secure.h"
 
 
+static uint8_t CAPITALS[] = "ABCDEFGHIJKLMNOPQRSTUYWZ";  
+static uint8_t LOWER[] = "abcdefghijklmnopqrstuywz";
+static uint8_t NUMBERS[] = "0123456789";
+static uint8_t SYMBOLS[] = "!@#$^&*?";
 
 uint8_t* init_random(size_t num_bytes) {
    uint8_t* bytes = (uint8_t*)malloc(num_bytes);
    getrandom(bytes, num_bytes, 0);
    return bytes;
+}
+
+uint8_t get_random_uint8() {
+   uint8_t* index = (uint8_t*)malloc(1);
+   uint8_t* bytes = (uint8_t*)malloc(255);
+   getrandom(bytes, 255, 0);
+   getrandom(index, 1, 0);
+   uint8_t rb = (uint8_t)bytes[index[0]];
+   free(index);
+   free(bytes);
+   return rb;
+}
+
+
+void generate_password(char* pw, size_t pw_len) {
+    size_t index;
+    for (int i = 0; i < pw_len - 1; ++i) {
+        uint8_t category = get_random_uint8() % NUM_CATEGORIES;
+        switch (category) {
+            case 0: 
+                {
+                    index = get_random_uint8() % NUM_LETTERS;
+                    pw[i] = CAPITALS[index];
+                    break;    
+                }
+            case 1: 
+                {
+                    index = get_random_uint8() % NUM_LETTERS;
+                    pw[i] = LOWER[index];
+                    break;    
+                }
+            case 2: 
+                {
+                    index = get_random_uint8() % NUM_NUMS;
+                    pw[i] = NUMBERS[index];
+                    break;
+                }
+            default: 
+                {
+                    index = get_random_uint8() % NUM_SYMBOLS;
+                    pw[i] = SYMBOLS[index];
+                }
+        };
+    }
+    pw[pw_len] = '\0';
 }
 
 

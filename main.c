@@ -408,7 +408,6 @@ void delete_item(Store* store, char* key) {
 
 
 int main(int argc, char **argv) {
-    
 
     //get rid of programm name 
     args_shift(&argc, &argv);
@@ -450,6 +449,13 @@ int main(int argc, char **argv) {
         if (strcmp(subcommand, "get") == 0) {
             char* user = args_shift(&argc, &argv);
             get_item(&store, user);
+            return 0;
+        }
+        if (strcmp(subcommand, "gen") == 0) {
+            char* user = args_shift(&argc, &argv);
+            char pass[15];
+            generate_password(pass, 15);
+            set_item(&store, user, pass);
             return 0;
         }
         if (strcmp(subcommand, "del") == 0) {

@@ -16,8 +16,15 @@
 #define SALTLEN 16
 #define SHA256_LEN 32
 #define AAD_IN_LEN 256
+#define NUM_LETTERS 26
+#define NUM_NUMS 10
+#define NUM_SYMBOLS 8 
+#define NUM_CATEGORIES 4
+
 //returns num_bytes of random bytes
 uint8_t* init_random(size_t num_bytes);
+
+uint8_t get_random_uint8();
 
 //////ARGON2
 //asks for user password, and compares the argon2id hash with it
@@ -51,4 +58,12 @@ int aes_decrypt(unsigned char* ciphertext, int ciphertext_len,
 
 int get_aad(unsigned char* buf);
 int get_iv();
+
+void generate_password(char* pw, size_t pw_len);
+
+
+
+
+
+
 #endif //_SECURE_H

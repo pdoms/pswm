@@ -6,4 +6,4 @@ FLAGS=-Wall
 LIBS="-L$ARGON2PATH/src -lcrypto"
 
 $CC main.c $ARGON2PATH/libargon2.a secure.c $LIBS -o pswm
-
+ 
